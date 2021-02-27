@@ -8,8 +8,8 @@ const main = async () => {
   await orm.getMigrator().up();
 
   // create
-  /* const post = orm.em.create(Post, { title: "this is a title" });
-  await orm.em.persistAndFlush(post); */
+  const post = orm.em.create(Post, { title: "this is a title" });
+  await orm.em.persistAndFlush(post);
 
   /// display
   const post = await orm.em.find(Post, {});
