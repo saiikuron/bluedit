@@ -1,4 +1,4 @@
-// import "reflect-metadata";
+import "reflect-metadata";
 import { MikroORM } from "@mikro-orm/core";
 import { __prod___ } from "./constants";
 import mikroConfig from "./mikro-orm.config";
