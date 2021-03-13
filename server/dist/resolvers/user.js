@@ -55,19 +55,19 @@ __decorate([
 FieldError = __decorate([
     type_graphql_1.ObjectType()
 ], FieldError);
-let userResponse = class userResponse {
+let UserResponse = class UserResponse {
 };
 __decorate([
     type_graphql_1.Field(() => [FieldError], { nullable: true }),
     __metadata("design:type", Array)
-], userResponse.prototype, "errors", void 0);
+], UserResponse.prototype, "errors", void 0);
 __decorate([
     type_graphql_1.Field(() => User_1.User, { nullable: true }),
     __metadata("design:type", User_1.User)
-], userResponse.prototype, "user", void 0);
-userResponse = __decorate([
+], UserResponse.prototype, "user", void 0);
+UserResponse = __decorate([
     type_graphql_1.ObjectType()
-], userResponse);
+], UserResponse);
 let UserResolver = class UserResolver {
     me({ req, em }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -80,41 +80,48 @@ let UserResolver = class UserResolver {
     }
     register(options, { em, req }) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (options.username.length < 2) {
+            if (options.username.length <= 2) {
                 return {
                     errors: [
                         {
-                            field: "Username",
-                            message: "The username is too short",
+                            field: "username",
+                            message: "length must be greater than 2",
                         },
                     ],
                 };
             }
-            if (options.password.length < 2) {
+            if (options.password.length <= 2) {
                 return {
                     errors: [
                         {
-                            field: "Password",
-                            message: "The password is too short",
+                            field: "password",
+                            message: "length must be greater than 2",
                         },
                     ],
                 };
             }
             const hashedPassword = yield argon2_1.default.hash(options.password);
-            const user = em.create(User_1.User, {
-                username: options.username,
-                password: hashedPassword,
-            });
+            let user;
             try {
-                yield em.persistAndFlush(user);
+                const result = yield em
+                    .createQueryBuilder(User_1.User)
+                    .getKnexQuery()
+                    .insert({
+                    username: options.username,
+                    password: hashedPassword,
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                })
+                    .returning("*");
+                user = result[0];
             }
             catch (err) {
-                if (err.code === "23505" || err.detail.includes("already exists")) {
+                if (err.detail.includes("already exists")) {
                     return {
                         errors: [
                             {
-                                field: "Username",
-                                message: "Username already taken",
+                                field: "username",
+                                message: "username already taken",
                             },
                         ],
                     };
@@ -131,8 +138,8 @@ let UserResolver = class UserResolver {
                 return {
                     errors: [
                         {
-                            field: "Username",
-                            message: "That username doesn't exist",
+                            field: "username",
+                            message: "that username doesn't exist",
                         },
                     ],
                 };
@@ -142,14 +149,16 @@ let UserResolver = class UserResolver {
                 return {
                     errors: [
                         {
-                            field: "Password",
-                            message: "Incorrect password",
+                            field: "password",
+                            message: "incorrect password",
                         },
                     ],
                 };
             }
             req.session.userId = user.id;
-            return { user };
+            return {
+                user,
+            };
         });
     }
 };
@@ -161,7 +170,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "me", null);
 __decorate([
-    type_graphql_1.Mutation(() => userResponse),
+    type_graphql_1.Mutation(() => UserResponse),
     __param(0, type_graphql_1.Arg("options")),
     __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
@@ -169,7 +178,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "register", null);
 __decorate([
-    type_graphql_1.Mutation(() => userResponse),
+    type_graphql_1.Mutation(() => UserResponse),
     __param(0, type_graphql_1.Arg("options")),
     __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
