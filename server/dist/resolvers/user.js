@@ -116,7 +116,7 @@ let UserResolver = class UserResolver {
                 user = result[0];
             }
             catch (err) {
-                if (err.code === "23505") {
+                if (err.detail.includes("already exists")) {
                     return {
                         errors: [
                             {

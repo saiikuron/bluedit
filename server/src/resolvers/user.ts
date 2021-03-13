@@ -101,7 +101,7 @@ export class UserResolver {
     } catch (err) {
       //|| err.detail.includes("already exists")) {
       // duplicate username error
-      if (err.code === "23505") {
+      if (err.detail.includes("already exists")) {
         return {
           errors: [
             {
@@ -137,7 +137,7 @@ export class UserResolver {
         ],
       };
     }
-    const valid = await argon2.verify(user.password, options.password);
+    const valid = await argon2.verify(user.password, options.password); // user.password: entered by the user; options.password: password stored in the db
     if (!valid) {
       return {
         errors: [
