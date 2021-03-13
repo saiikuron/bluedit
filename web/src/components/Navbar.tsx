@@ -3,11 +3,14 @@ import React from "react";
 import NextLink from "next/link";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { Button } from "@chakra-ui/button";
+import { isServer } from "../utils/isServer";
 
 interface NavbarProps {}
 
 export const Navbar: React.FC<NavbarProps> = ({}) => {
-  const [{ data, fetching }] = useMeQuery();
+  const [{ data, fetching }] = useMeQuery({
+    pause: isServer(), // Don't fetch the current user from server, but do it from the browser (to avoid multiple requests on the server)
+  });
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
   let body = null;
 

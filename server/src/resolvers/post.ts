@@ -1,7 +1,6 @@
 import { Post } from "../entities/Post";
 import { MyContext } from "../types";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
-
 // Querry: Get data --- Mutation: change things on the server
 
 @Resolver()
