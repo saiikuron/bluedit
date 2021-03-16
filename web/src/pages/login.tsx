@@ -21,7 +21,6 @@ export const Login: React.FC<registerProps> = ({}) => {
         onSubmit={async (values, { setErrors }) => {
           const response = await login(values);
           if (response.data?.login.errors) {
-            console.log("register error: ", response.data.login.errors);
             setErrors(toErrorMap(response.data.login.errors));
           } else if (response.data?.login.user) {
             // user successfully logged in

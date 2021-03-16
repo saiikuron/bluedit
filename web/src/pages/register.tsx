@@ -21,7 +21,6 @@ export const Register: React.FC<registerProps> = ({}) => {
         onSubmit={async (values, { setErrors }) => {
           const response = await register({ options: values });
           if (response.data?.register.errors) {
-            console.log("register error: ", response.data.register.errors);
             setErrors(toErrorMap(response.data.register.errors)); // to be fixed
           } else if (response.data?.register.user) {
             // user successfully registered
