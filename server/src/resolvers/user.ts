@@ -59,7 +59,8 @@ export class UserResolver {
         ],
       };
     }
-    const userId = await redis.get(FORGET_PASSWORD_PREFIX + token);
+    const key = FORGET_PASSWORD_PREFIX + token;
+    const userId = await redis.get(key);
     if (!userId) {
       return {
         errors: [
@@ -84,8 +85,9 @@ export class UserResolver {
       };
     }
     user.password = await argon2.hash(newPassword);
-    em.persistAndFlush(user);
-    // login user after the password reset
+    await em.persistAndFlush(user);
+    await redis.del(key);
+    // log in user after the password reset
     req.session.userId = user.id;
 
     return { user };
@@ -105,11 +107,11 @@ export class UserResolver {
     await redis.set(
       FORGET_PASSWORD_PREFIX + token,
       user.id,
-      "ex",
-      1000 * 60 * 60 * 24 //expire in 1 day
+      "ex", // expiration mode
+      1000 * 60 * 60 * 24 // expire in 1 day
     );
 
-    sendEmail(
+    await sendEmail(
       email,
       `<a href="http://localhost:3000/change-password/${token}">reset password</a>`
     );
