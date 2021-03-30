@@ -31,7 +31,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         type: "postgres",
         database: "blueddit",
         username: "postgres",
-        password: "M4r$-per5ever3nCe",
+        password: "postgres",
         logging: true,
         synchronize: true,
         entities: [Post_1.Post, User_1.User],

@@ -19,7 +19,7 @@ const main = async () => {
     type: "postgres",
     database: "blueddit",
     username: "postgres",
-    password: "M4r$-per5ever3nCe",
+    password: "postgres",
     logging: true,
     synchronize: true, // automatic migrations
     entities: [Post, User],
