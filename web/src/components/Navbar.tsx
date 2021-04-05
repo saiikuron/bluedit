@@ -32,7 +32,10 @@ export const Navbar: React.FC<NavbarProps> = ({}) => {
   } else {
     body = (
       <Flex>
-        <Box mr={2}>{data.me.username}</Box>
+        <NextLink href="/create-post">
+          <Link mr={4}>New post</Link>
+        </NextLink>
+        <Box mr={4}>{data.me.username}</Box>
         <Button
           color="black"
           variant="link"

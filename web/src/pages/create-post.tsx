@@ -7,16 +7,14 @@ import { useCreatePostMutation, useMeQuery } from "../generated/graphql";
 import { useRouter } from "next/router";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
+import {useIsAuth} from '../utils/useIsAuth'
 
 export const CreatePost: React.FC<{}> = ({}) => {
-  const [{data, fetching }] = useMeQuery();
-  useEffect(() => {
-    if(!fetching && !data.me){
-      router.replace('/login')
-    }
-  })
+  
   const [,createPost] = useCreatePostMutation();
   const router = useRouter();
+  useIsAuth()
+
   return (
     <Layout variant="small">
       <Formik
